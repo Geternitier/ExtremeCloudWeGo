@@ -77,7 +77,7 @@ Content-Type: application/json
 
 查询n号学生信息：
 ```http request
-POST http://127.0.0.1:8888/query?id=n
+GET http://127.0.0.1:8888/query?id=n
 ```
 
 #### 请求参数
