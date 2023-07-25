@@ -92,9 +92,14 @@ func Query(ctx context.Context, c *app.RequestContext) {
 // @router /update [GET]
 func Update(ctx context.Context, c *app.RequestContext) {
 
+	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
+	if err != nil {
+		panic("Failed to init an etcd resolver\n")
+	}
+
 	var opts []client.Option
-	opts = append(opts, client.WithHostPorts("127.0.0.1:9999"))
 	opts = append(opts, client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 10, MaxIdlePerAddress: 1000}))
+	opts = append(opts, client.WithResolver(r))
 
 	// 创建一个 Kitex 客户端调用服务进行更新
 	// 此处的 Kitex 客户端的 IDL 只包含 Update IDL 相关的部分
@@ -115,7 +120,8 @@ func Update(ctx context.Context, c *app.RequestContext) {
 
 }
 
-// InitGenericClient
+// InitGenericClient :
+// 创建 JSON 泛化调用 Client
 func InitGenericClient() (genericclient.Client, error) {
 	Update(context.Background(), nil)
 
