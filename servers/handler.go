@@ -20,12 +20,13 @@ func (s *StudentServiceImpl) Register(ctx context.Context, info *exvs.Student) (
 		fmt.Println("Registration Failed")
 		resp = exvs.NewRegisterResp()
 		resp.Success = false
-		resp.Message = "ID Already Existed"
+		resp.Message = "ID Already Existed."
 	} else {
 		table[info.Id] = *info
 		resp = exvs.NewRegisterResp()
 		resp.Success = true
-		resp.Message = fmt.Sprintf("Add %v %v to table\n", info.Id, info.Name)
+		resp.Message = fmt.Sprintf("Add %v %v to Database.", info.Id, info.Name)
+		fmt.Println()
 	}
 
 	return
