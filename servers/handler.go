@@ -16,14 +16,13 @@ var table = map[int32]exvs.Student{}
 // Register implements the StudentServiceImpl interface.
 func (s *StudentServiceImpl) Register(ctx context.Context, info *exvs.Student) (resp *exvs.RegisterResp, err error) {
 	_, ok := table[info.Id]
+	resp = exvs.NewRegisterResp()
 	if ok {
 		fmt.Println("Registration Failed")
-		resp = exvs.NewRegisterResp()
 		resp.Success = false
 		resp.Message = "ID Already Existed."
 	} else {
 		table[info.Id] = *info
-		resp = exvs.NewRegisterResp()
 		resp.Success = true
 		resp.Message = fmt.Sprintf("Add %v %v to Database.", info.Id, info.Name)
 		fmt.Println()
