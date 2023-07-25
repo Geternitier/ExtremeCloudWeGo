@@ -21,7 +21,7 @@ version: 0.0
 ### 接口：登记学生信息
 
 ```
-POST http://127.0.0.1:9999/add-student-info
+POST http://127.0.0.1:8888/add-student-info
 ```
 
 #### 请求参数
@@ -47,7 +47,7 @@ POST http://127.0.0.1:9999/add-student-info
 请求：
 
 ```
-POST http://127.0.0.1:9999/add-student-info HTTP/1.1
+POST http://127.0.0.1:8888/add-student-info HTTP/1.1
 Host: Exvs
 Content-Type: application/json
 
