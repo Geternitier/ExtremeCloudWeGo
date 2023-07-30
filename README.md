@@ -119,12 +119,15 @@ Content-Type: application/json
 
 ## IDL管理
 
-仅针对IDL更新服务编写IDL文件，在http端产生并使用相应kitex客户端调用IDL更新服务进行IDL热更新
+仅针对IDL更新服务编写IDL文件(idl/IDL.thrift)，http端使用该IDL产生相应kitex客户端，调用其IDL更新服务进行IDL热更新
+- 这里http端使用kitex调用客户端向kitex服务端发送请求并获得响应
+
+目前更新方式为单独启动一个goroutine，每10s更新一次IDL
 
 ## 部署步骤
 
 1. 安装Go语言环境
 2. 安装Kitex和Hertz，过程详见CloudWeGo官网
 3. 运行etcd数据库
-4. 运行servers/main.go，启动学生服务端
+4. 运行servers/main.go，启动学生服务
 5. 运行http/main.go，启动http服务
