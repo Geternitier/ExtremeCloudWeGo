@@ -3,6 +3,7 @@
 package main
 
 import (
+	"Exvs/http/biz/handler/Exvs"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
@@ -10,6 +11,7 @@ func main() {
 	h := server.Default()
 
 	register(h)
+	Exvs.InitGenericClient()
 
 	h.Spin()
 }

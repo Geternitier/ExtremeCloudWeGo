@@ -12,6 +12,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/connpool"
 	"github.com/cloudwego/kitex/pkg/generic"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"time"
 
 	Exvs "Exvs/http/biz/model/Exvs"
 	Exvs2 "Exvs/http/kitex_gen/Exvs"
@@ -20,6 +21,7 @@ import (
 )
 
 var idl = ""
+var cli genericclient.Client
 
 // Register .
 // @router /add-student-info [POST]
@@ -33,11 +35,6 @@ func Register(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(Exvs.RegisterResp)
-
-	cli, err := InitGenericClient()
-	if err != nil {
-		panic("Generic Client Init Failure")
-	}
 
 	bytes, err := c.Body()
 	if err != nil {
@@ -71,11 +68,6 @@ func Query(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
-	}
-
-	cli, err := InitGenericClient()
-	if err != nil {
-		panic("Generic Client Init Failure:" + err.Error())
 	}
 
 	bytes, err := json.Marshal(req)
@@ -122,7 +114,7 @@ func Update(ctx context.Context, c *app.RequestContext) {
 
 // InitGenericClient :
 // 创建 JSON 泛化调用 Client
-func InitGenericClient() (genericclient.Client, error) {
+func InitGenericClient() {
 	Update(context.Background(), nil)
 
 	var p generic.DescriptorProvider
@@ -149,11 +141,21 @@ func InitGenericClient() (genericclient.Client, error) {
 		panic("Failed to init an etcd resolver\n")
 	}
 
-	cli, err := genericclient.NewClient(
+	cli, err = genericclient.NewClient(
 		"Exvs",
 		g,
 		client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 10, MaxIdlePerAddress: 1000}),
 		client.WithResolver(r))
 
-	return cli, err
+	if err != nil {
+		panic("Generic Client Init Failure:" + err.Error())
+	}
+
+	go func() {
+		// 定时任务
+		ticker := time.NewTicker(time.Second * 10)
+		for range ticker.C {
+			Update(context.Background(), nil)
+		}
+	}()
 }
